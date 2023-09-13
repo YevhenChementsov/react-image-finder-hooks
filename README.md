@@ -1,11 +1,17 @@
-# React + Vite
+**Читать на других языках: [Русский](README.md), [Українська](README.ua.md),
+[English](README.en.md).**
 
-This template provides a minimal setup to get React working in Vite with HMR and
-some ESLint rules.
+# Хуки.
 
-Currently, two official plugins are available:
+- В шапке репозитория есть ссылка на живую страницу на `GitHub pages`.
+- При запуске кода, в консоли нет ошибок и предупреждений.
+- Для каждого компонента есть отдельная папка с файлом React-компонента и файлом
+  стилей.
+- Для компонентов описаны `propTypes`.
+- Имена компонентов понятные, описательные.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md)
-  uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc)
-  uses [SWC](https://swc.rs/) for Fast Refresh
+## Задание
+
+- Провести рефакторинг кода «Поиск изображений» из репозитория
+  [react-image-finder](https://github.com/YevhenChementsov/react-image-finder),
+  используя React-хуки.
