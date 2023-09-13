@@ -1,48 +1,38 @@
-import { Component } from 'react';
+import { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
-import { RemoveScroll } from 'react-remove-scroll';
 import { createPortal } from 'react-dom';
+import { RemoveScroll } from 'react-remove-scroll';
 import { Backdrop, Content } from './Modal.styled';
 
 const modalRoot = document.querySelector('#modal-root');
 
-class Modal extends Component {
-  static propTypes = {
-    onClose: PropTypes.func.isRequired,
-    children: PropTypes.node,
-  };
+const Modal = ({ onClose, children }) => {
+  useEffect(() => {
+    const handleKeyDown = e => e.code === 'Escape' && onClose();
 
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
+    window.addEventListener('keydown', handleKeyDown);
 
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
 
-  handleKeyDown = e => {
-    if (e.code === 'Escape') {
-      this.props.onClose();
-    }
-  };
+  const handleBackdropClick = e => e.currentTarget === e.target && onClose();
 
-  handleBackdropClick = e => {
-    if (e.currentTarget === e.target) {
-      this.props.onClose();
-    }
-  };
+  return createPortal(
+    <Backdrop onClick={handleBackdropClick}>
+      <RemoveScroll>
+        <Content>{children}</Content>
+      </RemoveScroll>
+    </Backdrop>,
+    modalRoot,
+  );
+};
 
-  render() {
-    return createPortal(
-      <Backdrop onClick={this.handleBackdropClick}>
-        <RemoveScroll>
-          <Content>{this.props.children}</Content>
-        </RemoveScroll>
-      </Backdrop>,
-      modalRoot,
-    );
-  }
-}
+Modal.propTypes = {
+  onClose: PropTypes.func.isRequired,
+  children: PropTypes.node,
+};
 
 export default Modal;

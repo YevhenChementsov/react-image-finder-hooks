@@ -8,7 +8,7 @@ import { Button, Form, Header, Input } from './SearchBar.styled';
 const SearchBar = ({ onSubmit }) => {
   const [value, setValue] = useState('');
 
-  const handleValueChange = ({ target: { value } }) => setValue({ value });
+  const handleValueChange = ({ target: { value } }) => setValue(value);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -18,7 +18,7 @@ const SearchBar = ({ onSubmit }) => {
     }
 
     onSubmit(value);
-    setValue({ value: '' });
+    setValue('');
   };
 
   return (
