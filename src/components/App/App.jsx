@@ -1,49 +1,37 @@
-import { Component } from 'react';
-
-import { ToastContainer, Zoom } from 'react-toastify';
 import ImageGallery from '@/components/ImageGallery/ImageGallery';
 import SearchBar from '@/components/SearchBar/SearchBar';
+import { useCustomContext } from '@/contexts/Provider';
+import { ToastContainer, Zoom } from 'react-toastify';
 import { AppWrapper, ErrorMessage } from './App.styled';
 
-export default class App extends Component {
-  state = {
-    value: '',
-    error: null,
-  };
+const App = () => {
+  const { error } = useCustomContext();
 
-  handleError = error => {
-    this.setState({ error });
-  };
+  return (
+    <>
+      {error ? (
+        <ErrorMessage>{error.message}</ErrorMessage>
+      ) : (
+        <AppWrapper>
+          <SearchBar />
+          <ImageGallery />
+        </AppWrapper>
+      )}
+      <ToastContainer
+        position="top-right"
+        transition={Zoom}
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss={false}
+        draggable={false}
+        pauseOnHover={false}
+        theme="colored"
+      />
+    </>
+  );
+};
 
-  handleSubmit = value => {
-    this.setState({ value });
-  };
-
-  render() {
-    return (
-      <>
-        {this.state.error ? (
-          <ErrorMessage>{this.state.error.message}</ErrorMessage>
-        ) : (
-          <AppWrapper>
-            <SearchBar onSubmit={this.handleSubmit} />
-            <ImageGallery value={this.state.value} onError={this.handleError} />
-          </AppWrapper>
-        )}
-        <ToastContainer
-          position="top-right"
-          transition={Zoom}
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss={false}
-          draggable={false}
-          pauseOnHover={false}
-          theme="colored"
-        />
-      </>
-    );
-  }
-}
+export default App;

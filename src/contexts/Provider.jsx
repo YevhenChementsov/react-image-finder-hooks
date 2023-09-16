@@ -10,11 +10,11 @@ const Provider = ({ children }) => {
   const [error, setError] = useState(null);
   const [value, setValue] = useState('');
 
-  const handleError = error => setError(error);
-  const handleSubmit = value => setValue(value);
+  const handleCatchError = error => setError(error);
+  const handleSubmitValue = value => setValue(value);
 
   const providerValue = useMemo(() => {
-    return { error, value, handleError, handleSubmit };
+    return { error, value, handleCatchError, handleSubmitValue };
   }, [error, value]);
 
   return <Context.Provider value={providerValue}>{children}</Context.Provider>;

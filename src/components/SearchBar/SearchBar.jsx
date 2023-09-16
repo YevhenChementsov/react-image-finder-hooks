@@ -1,11 +1,12 @@
 import { useState } from 'react';
 
+import { useCustomContext } from '@/contexts/Provider';
 import { ReactComponent as SearchIcon } from '@/icons/search.svg';
-import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { Button, Form, Header, Input } from './SearchBar.styled';
 
-const SearchBar = ({ onSubmit }) => {
+const SearchBar = () => {
+  const { handleSubmitValue } = useCustomContext();
   const [value, setValue] = useState('');
 
   const handleValueChange = ({ target: { value } }) => setValue(value);
@@ -17,7 +18,7 @@ const SearchBar = ({ onSubmit }) => {
       return toast.warning('No query entered yet...');
     }
 
-    onSubmit(value);
+    handleSubmitValue(value);
     setValue('');
   };
 
@@ -39,10 +40,6 @@ const SearchBar = ({ onSubmit }) => {
       </Form>
     </Header>
   );
-};
-
-SearchBar.propTypes = {
-  onSubmit: PropTypes.func.isRequired,
 };
 
 export default SearchBar;
