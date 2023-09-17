@@ -7,15 +7,13 @@ const Context = createContext();
 export const useCustomContext = () => useContext(Context);
 
 const Provider = ({ children }) => {
-  const [error, setError] = useState(null);
   const [value, setValue] = useState('');
 
-  const handleCatchError = error => setError(error);
   const handleSubmitValue = value => setValue(value);
 
   const providerValue = useMemo(() => {
-    return { error, value, handleCatchError, handleSubmitValue };
-  }, [error, value]);
+    return { value, handleSubmitValue };
+  }, [value]);
 
   return <Context.Provider value={providerValue}>{children}</Context.Provider>;
 };

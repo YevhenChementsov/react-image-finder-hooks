@@ -1,139 +1,111 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 
 import ImageGalleryItem from '@/components/ImageGalleryItem/ImageGalleryItem';
 import LoadMoreButton from '@/components/LoadMoreButton/LoadMoreButton';
 import Loader from '@/components/Loader/Loader';
 import Modal from '@/components/Modal/Modal';
 import ScrollToTopButton from '@/components/ScrollToTopButton/ScrollToTopButton';
+import { useCustomContext } from '@/contexts/Provider';
 import api from '@/services/api';
-import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { ImageItem, ImageList } from './ImageGallery.styled';
 
-class ImageGallery extends Component {
-  static propTypes = {
-    onError: PropTypes.func.isRequired,
-    value: PropTypes.string.isRequired,
-  };
+const ImageGallery = () => {
+  const [activeImageIndex, setActiveImageIndex] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [images, setImages] = useState([]);
+  const [showLoader, setShowLoader] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [totalImages, setTotalImages] = useState(null);
+  const { value } = useCustomContext();
 
-  state = {
-    activeImageIndex: null,
-    currentPage: 1,
-    error: null,
-    images: [],
-    showLoader: false,
-    showModal: false,
-    totalImages: null,
-  };
-
-  async componentDidUpdate(prevProps) {
-    if (prevProps.value !== this.props.value) {
-      this.setState(
-        {
-          images: [],
-          currentPage: 1,
-        },
-        () => this.fetchImagesAndPhoto(),
-      );
+  useEffect(() => {
+    if (value !== null) {
+      setImages([]);
+      setCurrentPage(1);
     }
-  }
+  }, [value]);
 
-  fetchImagesAndPhoto = async () => {
-    const { value, onError } = this.props;
-    const { currentPage } = this.state;
-
-    try {
-      this.setState({ showLoader: true });
-
-      const { hits, totalHits } = await api.fetchImages(value, currentPage);
-
-      if (!hits.length) {
-        toast.error('Please, enter a proper query!');
-      }
-
-      this.setState(({ images }) => ({
-        images: [...images, ...hits],
-        totalImages: totalHits,
-      }));
-    } catch (error) {
-      this.setState({ error }, () => {
-        if (onError) {
-          onError(error);
+  useEffect(() => {
+    if (!value) return;
+    const fetchImagesAndPhoto = async () => {
+      try {
+        setShowLoader(true);
+        const { hits, totalHits } = await api.fetchImages(value, currentPage);
+        if (!hits.length) {
+          toast.error('Please, enter a proper query!');
         }
+        setImages(images => [...images, ...hits]);
+        setTotalImages(totalHits);
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setShowLoader(false);
+      }
+    };
+
+    fetchImagesAndPhoto();
+  }, [currentPage, value]);
+
+  useEffect(() => {
+    if (images.length > 12) {
+      window.scrollTo({
+        top: document.documentElement.scrollHeight,
+        behavior: 'smooth',
       });
-    } finally {
-      this.setState({ showLoader: false }, () =>
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: 'smooth',
-        }),
-      );
     }
-  };
+  }, [images.length]);
 
-  loadMoreImages = () => {
-    const { images, totalImages } = this.state;
-
-    if (images.length === totalImages) {
+  const loadMoreImages = () => {
+    if (images.length >= totalImages) {
       return toast.error('There is no more images to show');
     }
 
-    this.setState(
-      ({ currentPage }) => ({ currentPage: currentPage + 1 }),
-      () => this.fetchImagesAndPhoto(),
-    );
+    setCurrentPage(currentPage => currentPage + 1);
   };
 
-  toggleModal = index => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-      activeImageIndex: index,
-    }));
+  const toggleModal = index => {
+    setShowModal(!showModal);
+    setActiveImageIndex(index);
   };
 
-  render() {
-    const { images, showLoader, showModal, activeImageIndex } = this.state;
+  return (
+    <>
+      {images.length > 1 && (
+        <>
+          <ImageList>
+            {images.map(({ id, webformatURL, largeImageURL, tags }, index) => (
+              <ImageItem key={id} onClick={() => toggleModal(index)}>
+                <ImageGalleryItem
+                  imageUrl={webformatURL}
+                  modalImageUrl={largeImageURL}
+                  imageDescription={tags}
+                />
+              </ImageItem>
+            ))}
+          </ImageList>
+          <ScrollToTopButton />
+        </>
+      )}
 
-    return (
-      <>
-        {images.length > 1 && (
-          <>
-            <ImageList>
-              {images.map(
-                ({ id, webformatURL, largeImageURL, tags }, index) => (
-                  <ImageItem key={id} onClick={() => this.toggleModal(index)}>
-                    <ImageGalleryItem
-                      imageUrl={webformatURL}
-                      modalImageUrl={largeImageURL}
-                      imageDescription={tags}
-                    />
-                  </ImageItem>
-                ),
-              )}
-            </ImageList>
-            <ScrollToTopButton />
-          </>
-        )}
+      {!showLoader && images.length > 1 && (
+        <LoadMoreButton onSearch={loadMoreImages} />
+      )}
 
-        {!showLoader && images.length > 1 && (
-          <LoadMoreButton onSearch={this.loadMoreImages} />
-        )}
+      {showLoader && <Loader />}
 
-        {showLoader && <Loader />}
-
-        {showModal && (
-          <Modal onClose={this.toggleModal}>
-            {
-              <img
-                src={images[activeImageIndex].largeImageURL}
-                alt={images.tags}
-              />
-            }
-          </Modal>
-        )}
-      </>
-    );
-  }
-}
+      {showModal && (
+        <Modal onClose={toggleModal}>
+          {
+            <img
+              src={images[activeImageIndex].largeImageURL}
+              alt={images.tags}
+            />
+          }
+        </Modal>
+      )}
+    </>
+  );
+};
 
 export default ImageGallery;

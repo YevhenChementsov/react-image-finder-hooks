@@ -1,13 +1,12 @@
-import { TailSpin } from 'react-loader-spinner';
+import { ThreeDots } from 'react-loader-spinner';
 
 const Loader = () => {
   return (
-    <TailSpin
+    <ThreeDots
       height="80"
       width="80"
       color="#40e0d0"
-      ariaLabel="tail-spin-loading"
-      radius="1"
+      ariaLabel="three-dots-loading"
       wrapperStyle={{ justifyContent: 'center' }}
       visible={true}
     />

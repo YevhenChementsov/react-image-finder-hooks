@@ -1,26 +1,19 @@
 import ImageGallery from '@/components/ImageGallery/ImageGallery';
 import SearchBar from '@/components/SearchBar/SearchBar';
-import { useCustomContext } from '@/contexts/Provider';
 import { ToastContainer, Zoom } from 'react-toastify';
-import { AppWrapper, ErrorMessage } from './App.styled';
+import { AppWrapper } from './App.styled';
 
 const App = () => {
-  const { error } = useCustomContext();
-
   return (
     <>
-      {error ? (
-        <ErrorMessage>{error.message}</ErrorMessage>
-      ) : (
-        <AppWrapper>
-          <SearchBar />
-          <ImageGallery />
-        </AppWrapper>
-      )}
+      <AppWrapper>
+        <SearchBar />
+        <ImageGallery />
+      </AppWrapper>
       <ToastContainer
         position="top-right"
         transition={Zoom}
-        autoClose={3000}
+        autoClose={1500}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
