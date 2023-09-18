@@ -1,10 +1,9 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useMemo, useState } from 'react';
 
 import PropTypes from 'prop-types';
 
 const Context = createContext();
-
-export const useCustomContext = () => useContext(Context);
 
 const Provider = ({ children }) => {
   const [value, setValue] = useState('');
@@ -23,3 +22,4 @@ Provider.propTypes = {
 };
 
 export default Provider;
+export const useCustomContext = () => useContext(Context);
