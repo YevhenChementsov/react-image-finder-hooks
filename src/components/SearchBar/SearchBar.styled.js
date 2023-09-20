@@ -14,7 +14,7 @@ export const Header = styled.header`
   padding-top: 12px;
   padding-bottom: 12px;
   color: ${props => props.theme.colors.white};
-  background-color: ${props => props.theme.colors.button};
+  background: linear-gradient(181deg, #7643b7 0%, #3f78b5 100%);
   box-shadow:
     0px 2px 4px -1px rgba(0, 0, 0, 0.2),
     0px 4px 5px 0px rgba(0, 0, 0, 0.14),

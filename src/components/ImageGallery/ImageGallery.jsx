@@ -27,16 +27,21 @@ const ImageGallery = () => {
   }, [value]);
 
   useEffect(() => {
+    let controller = new AbortController();
+
     if (!value) return;
     const fetchImagesAndPhoto = async () => {
       try {
         setShowLoader(true);
-        const { hits, totalHits } = await api.fetchImages(value, currentPage);
+        const { hits, totalHits } = await api.fetchImages(value, currentPage, {
+          signal: controller.signal,
+        });
         if (!hits.length) {
           toast.error('Please, enter a proper query!');
         }
         setImages(images => [...images, ...hits]);
         setTotalImages(totalHits);
+        controller = null;
       } catch (error) {
         toast.error(error.message);
       } finally {
@@ -45,6 +50,10 @@ const ImageGallery = () => {
     };
 
     fetchImagesAndPhoto();
+
+    return () => {
+      controller?.abort();
+    };
   }, [currentPage, value]);
 
   useEffect(() => {

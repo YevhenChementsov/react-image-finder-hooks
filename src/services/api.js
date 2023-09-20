@@ -1,14 +1,15 @@
 import axios from 'axios';
+
 const BASE_URL = 'https://pixabay.com/api';
 const API_KEY = '22969574-6aad5b2f74d6cb304dd2a3ef9';
 
 const getPerPageValue = () => {
   const screenWidth = window.innerWidth;
-  if (screenWidth >= 2560) {
+  if (screenWidth > 2335) {
     return 16;
-  } else {
-    return 12;
   }
+
+  return screenWidth > 2047 ? 14 : 12;
 };
 
 const fetchImages = async (query, page) => {
@@ -21,7 +22,6 @@ const fetchImages = async (query, page) => {
     if (!response.data.hits) {
       throw new Error('No results found');
     }
-
     return response.data;
   } catch (error) {
     throw new Error(`An error has occurred: ${error.message}`);
