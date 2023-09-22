@@ -14,11 +14,30 @@ export const Header = styled.header`
   padding-top: 12px;
   padding-bottom: 12px;
   color: ${props => props.theme.colors.white};
-  background: linear-gradient(181deg, #7643b7 0%, #3f78b5 100%);
+  background: ${props => `linear-gradient(-45deg,
+    ${props.theme.colors.firstGradientColor},
+    ${props.theme.colors.secondGradientColor},
+    ${props.theme.colors.thirdGradientColor},
+    ${props.theme.colors.secondGradientColor},
+    ${props.theme.colors.firstGradientColor})`};
+  background-size: 400% 400%;
+  animation: gradient 10s ease-in-out infinite;
   box-shadow:
     0px 2px 4px -1px rgba(0, 0, 0, 0.2),
     0px 4px 5px 0px rgba(0, 0, 0, 0.14),
     0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
 `;
 
 export const Form = styled.form`

@@ -5,7 +5,7 @@ const Loader = () => {
     <ThreeDots
       height="80"
       width="80"
-      color="#40e0d0"
+      color="#7643b7"
       ariaLabel="three-dots-loading"
       wrapperStyle={{ justifyContent: 'center' }}
       visible={true}
